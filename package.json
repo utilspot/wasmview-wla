@@ -1,0 +1,30 @@
+{
+  "name": "wasmview-wla",
+  "version": "1.0.0",
+  "description": "WASM View - upload a WebAssembly module and inspect its content",
+  "license": "MIT",
+  "type": "module",
+  "homepage": "https://github.com/utilspot/wasmview-wla",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/utilspot/wasmview-wla.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.node.json && vite build",
+    "bitmake": "npx bitmake build",
+    "server": "build/package/bin/wasmview_server",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "bitmake": "^0.0.1-develop.15",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1"
+  }
+}

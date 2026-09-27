@@ -1,0 +1,475 @@
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-alt: #f0f2f5;
+  --border: #dde1e7;
+  --text: #1c2026;
+  --muted: #667085;
+  --accent: #654ff0;
+  --accent-soft: #ece9fe;
+  --error: #b42318;
+  --error-soft: #fef3f2;
+  --tag-function: #1d4ed8;
+  --tag-table: #b45309;
+  --tag-memory: #047857;
+  --tag-global: #7c3aed;
+  --tag-tag: #be185d;
+  --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111318;
+    --surface: #181b21;
+    --surface-alt: #1f232b;
+    --border: #2d323c;
+    --text: #e6e8ec;
+    --muted: #98a2b3;
+    --accent: #9b8cff;
+    --accent-soft: #2a2550;
+    --error: #fda29b;
+    --error-soft: #3a1a18;
+    --tag-function: #93b4ff;
+    --tag-table: #fbbf5a;
+    --tag-memory: #5ee0b0;
+    --tag-global: #c4a6ff;
+    --tag-tag: #f58fc0;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.5 var(--sans);
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  /* Fixed height: the "Open module" button is taller than the brand and only
+     appears after an upload, which would otherwise make the header grow. */
+  height: 60px;
+  padding: 0 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-start {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.home-button {
+  display: flex;
+  padding: 4px 0 4px 14px;
+  border-left: 1px solid var(--border);
+  opacity: 0.85;
+}
+
+.home-button:hover,
+.home-button:focus-visible {
+  opacity: 1;
+}
+
+.home-button img {
+  display: block;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Centered against the viewport width (100vw includes the scrollbar), not the
+   layout width, so content does not jump sideways when a tab switch makes the
+   page start or stop scrolling. */
+.app-main {
+  --main-offset: max(0px, (100vw - 1200px) / 2);
+  flex: 1;
+  width: min(1200px, 100% - var(--main-offset));
+  margin-left: var(--main-offset);
+  padding: 24px;
+}
+
+/* .app is a full-height column and .app-main grows, so the footer stays at
+   the bottom of the window even when the content is shorter. */
+.app-footer {
+  padding: 12px 24px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.app-footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.app-footer a:hover {
+  text-decoration: underline;
+}
+
+.button {
+  padding: 7px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.button:hover {
+  filter: brightness(1.08);
+}
+
+.upload-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 48px;
+  padding: 64px 24px;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.upload-zone:hover,
+.upload-zone:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  outline: none;
+}
+
+.upload-title {
+  color: var(--text);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.upload-hint {
+  font-size: 13px;
+}
+
+.drop-overlay {
+  position: fixed;
+  inset: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px dashed var(--accent);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.notice.error {
+  border-color: var(--error);
+  background: var(--error-soft);
+  color: var(--error);
+}
+
+.upload-progress {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.upload-progress-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-progress-value {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.progress-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface-alt);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent);
+  transition: width 0.15s ease-out;
+}
+
+/* Upload finished; the server is parsing, so the bar pulses until it answers. */
+.progress-bar.done {
+  animation: progress-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes progress-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.summary {
+  margin-bottom: 20px;
+}
+
+.file-name {
+  margin: 0 0 4px;
+  font: 600 20px/1.3 var(--mono);
+  overflow-wrap: anywhere;
+}
+
+.file-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tab.active {
+  border-bottom-color: var(--accent);
+  color: var(--accent);
+}
+
+.badge {
+  padding: 0 7px;
+  border-radius: 10px;
+  background: var(--surface-alt);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.tab.active .badge {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.tab-panel {
+  padding-top: 16px;
+  overflow-x: auto;
+}
+
+.filter {
+  width: 100%;
+  max-width: 360px;
+  margin-bottom: 12px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+}
+
+.filter:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.grid {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.grid th,
+.grid td {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.grid th {
+  background: var(--surface-alt);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.grid .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.grid .code {
+  font-family: var(--mono);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.grid tr.clickable {
+  cursor: pointer;
+}
+
+.grid tr.clickable:hover td {
+  background: var(--surface-alt);
+}
+
+.caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-right: 8px;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 5px solid var(--muted);
+  transition: transform 0.15s;
+}
+
+.caret.open {
+  transform: rotate(90deg);
+}
+
+.hex-row td {
+  background: var(--surface-alt);
+}
+
+.hex {
+  margin: 0 0 4px;
+  font: 12px/1.5 var(--mono);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.tag {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--surface-alt);
+  color: var(--muted);
+  font: 500 11px/18px var(--sans);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.tag.kind-function { color: var(--tag-function); }
+.tag.kind-table { color: var(--tag-table); }
+.tag.kind-memory { color: var(--tag-memory); }
+.tag.kind-global { color: var(--tag-global); }
+.tag.kind-tag { color: var(--tag-tag); }
+.tag.import { color: var(--tag-table); }
+.tag.export { color: var(--tag-memory); }
+
+.export-name {
+  margin-right: 10px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 12px;
+}
+
+.footer {
+  padding: 10px 2px;
+}
+
+@media (max-width: 640px) {
+  .app-header,
+  .app-main {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .upload-zone {
+    margin-top: 16px;
+    padding: 40px 16px;
+  }
+}

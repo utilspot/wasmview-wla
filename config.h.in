@@ -1,0 +1,6 @@
+/* config.h.  Generated from cconfig.h.in by CMake.  */
+
+#cmakedefine WASMVIEW_ASSETS_DIR  "@WASMVIEW_ASSETS_DIR@"
+#cmakedefine WASMVIEW_BASE_URL    "@WASMVIEW_BASE_URL@"
+#cmakedefine WASMVIEW_ROOT_URL    "@WASMVIEW_ROOT_URL@"
+#cmakedefine WASMVIEW_SERVICE_URL "@WASMVIEW_SERVICE_URL@"
