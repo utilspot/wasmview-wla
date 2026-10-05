@@ -25,6 +25,21 @@ endif()
 set(WASMVIEW_SERVICE_URL "${WASMVIEW_ROOT_URL}modinfo")
 set(WASMVIEW_ASSETS_DIR "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}")
 
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES opcodes.c)
+add_executable(opcodes opcodes.c)
+target_link_libraries(opcodes PRIVATE LibNetQ::LibNetQ)
+
+add_custom_command(
+  COMMENT "Generating opcodes.json"
+  DEPENDS opcodes
+  COMMAND "$<TARGET_FILE:opcodes>" "${CMAKE_CURRENT_BINARY_DIR}/opcodes.json"
+  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/opcodes.json"
+  )
+set_source_files_properties(
+  "${CMAKE_CURRENT_BINARY_DIR}/opcodes.json" PROPERTIES GENERATED TRUE
+  )
+
 set(WASMVIEW_DATAFILES
   config.h.in
   )
@@ -41,14 +56,17 @@ set(WASMVIEW_DISTFILES
   dist/index.html
   dist/index.js
   dist/index.css
+  dist/opcodes.html
+  dist/opcodes.js
   dist/favicon.svg
+  dist/logo_wla.svg
   dist/manifest.json
   )
 
 add_custom_command(
   COMMAND ${NPM_PREFIX} "${NPM_EXECUTABLE}" install
-  COMMAND ${NPM_PREFIX} "${NPM_EXECUTABLE}" run build --base-url=${WASMVIEW_BASE_URL}
-  DEPENDS package.json vite.config.ts ${WASMVIEW_UIFILES}
+  COMMAND ${NPM_PREFIX} "${NPM_EXECUTABLE}" run build --base-url=${WASMVIEW_BASE_URL} "--opcodes=${CMAKE_CURRENT_BINARY_DIR}/opcodes.json"
+  DEPENDS package.json vite.config.ts ${WASMVIEW_UIFILES} "${CMAKE_CURRENT_BINARY_DIR}/opcodes.json"
   OUTPUT ${WASMVIEW_DISTFILES}
   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
   )
@@ -70,6 +88,7 @@ if (APPLE)
   set_target_properties(wasmview_server PROPERTIES INSTALL_RPATH "@loader_path/../lib")
 elseif (UNIX)
   set_target_properties(wasmview_server PROPERTIES INSTALL_RPATH "$ORIGIN/../lib")
+  target_link_options(wasmview_server PRIVATE -Wl,--disable-new-dtags)
 endif ()
 
 if (WASMVIEW_INSTALL_SERVER)

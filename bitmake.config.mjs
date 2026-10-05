@@ -79,7 +79,7 @@ export default {
     destDir,
   },
   "bundle:libnetq": {
-    sourceUrl: "https://github.com/libnetq/libnetq/archive/refs/tags/v1.0.19.tar.gz",
+    sourceUrl: "https://github.com/libnetq/libnetq/archive/refs/tags/v1.1.0.tar.gz",
     action: "cmake",
     cacheVariables: {
       CMAKE_PREFIX_PATH: destDir + prefix,
@@ -87,7 +87,7 @@ export default {
       LNQ_LIBRARY_TYPE: "SHARED",
       LNQ_WITH_ZLIB: true,
       LNQ_WITH_OPENSSL: true,
-      LNQ_WITH_JANSSON: true,
+      LNQ_JSON_BACKEND: "JANSSON",
       LNQ_WITH_CIVETWEB: true,
     },
     environment,
