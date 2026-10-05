@@ -1,4 +1,3 @@
-#include <libnetq/Context.h>
 #include <libnetq/web/WebServer.h>
 
 struct NQWebServerParams kServerParams = {

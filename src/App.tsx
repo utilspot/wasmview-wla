@@ -2,11 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { uploadModule, type WasmModuleInfo } from "./api";
 import { UploadZone } from "./components/UploadZone";
 import { ModuleView } from "./components/ModuleView";
-import homeIconDark from "./assets/home_dark_hover.svg";
-import homeIconLight from "./assets/home_light_hover.svg";
-
-// Served under a sub-path, so offer a way back to the site root.
-const kShowHome = import.meta.env.BASE_URL !== "/";
+import { AppFooter, AppHeader } from "./components/Layout";
 
 type State =
   | { status: "idle" }
@@ -84,23 +80,9 @@ export function App() {
 
   return (
     <div className={dragging ? "app dragging" : "app"}>
-      <header className="app-header">
-        <div className="header-start">
-          <a className="brand" href={import.meta.env.BASE_URL}>
-            <img src={import.meta.env.BASE_URL + "favicon.svg"} alt="" width={28} height={28} />
-            <span>WASM View</span>
-          </a>
-          {kShowHome && (
-            <a className="home-button" href="/" title="Home" aria-label="Home">
-              <picture>
-                <source srcSet={homeIconLight} media="(prefers-color-scheme: dark)" />
-                <img src={homeIconDark} alt="" width={30} height={28} />
-              </picture>
-            </a>
-          )}
-        </div>
+      <AppHeader page="module">
         {state.status !== "idle" && <UploadZone compact onFile={openFile} />}
-      </header>
+      </AppHeader>
 
       <main className="app-main">
         {state.status === "idle" && <UploadZone onFile={openFile} />}
@@ -116,9 +98,7 @@ export function App() {
         {state.status === "ready" && <ModuleView file={state.file} module={state.module} />}
       </main>
 
-      <footer className="app-footer">
-        Copyright © 2026 · {__PACKAGE_LICENSE__} · <a href={__PACKAGE_HOMEPAGE__} target="_blank" rel="noreferrer">GitHub</a>
-      </footer>
+      <AppFooter />
 
       {dragging && <div className="drop-overlay">Drop a .wasm module to inspect it</div>}
     </div>
