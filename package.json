@@ -1,6 +1,6 @@
 {
   "name": "wasmview-wla",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "WASM View - upload a WebAssembly module and inspect its content",
   "license": "MIT",
   "type": "module",
@@ -21,7 +21,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
-    "bitmake": "^0.0.1-develop.15",
+    "bitmake": "^0.0.1-develop.16",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "typescript": "^7.0.2",
